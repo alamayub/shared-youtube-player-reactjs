@@ -2,7 +2,8 @@ import React, { useState, useEffect, useRef } from "react";
 import YouTube from "react-youtube";
 import io from "socket.io-client";
 
-const SOCKET_SERVER_URL = "https://shared-youtube-player-nodejs.onrender.com"; //  "http://localhost:3001";
+const SOCKET_SERVER_URL = "http://localhost:3001";
+// const SOCKET_SERVER_URL = "https://shared-youtube-player-nodejs.onrender.com";
 const ROOM_ID = "default-room";
 
 export default function App() {
@@ -173,73 +174,76 @@ export default function App() {
   };
 
   return (
-    <div style={{ padding: 20, maxWidth: 600, margin: "auto" }}>
-      <input
-        type="text"
-        placeholder="Enter YouTube video URL"
-        value={inputUrl}
-        onChange={(e) => setInputUrl(e.target.value)}
-        style={{ width: "80%" }}
-      />
-      <button onClick={addVideo}>Add Video</button>
-
-      <ul style={{ listStyle: "none", padding: 0 }}>
-        {playlist.map((video, i) => (
-          <li
-            key={video.id}
-            style={{
-              margin: "10px 0",
-              cursor: "pointer",
-              backgroundColor: i === currentIndex ? "#e0e0e0" : "transparent",
-              display: "flex",
-              alignItems: "center",
-            }}
-            onClick={() => playVideoAtIndex(i)}
-          >
-            <img src={video.thumbnail} alt={video.title} width={120} />
-            <div style={{ marginLeft: 10 }}>
-              <div style={{ fontWeight: "bold" }}>{video.title}</div>
-              <div style={{ fontSize: 12, color: "#666" }}>{video.author}</div>
-            </div>
-          </li>
-        ))}
-      </ul>
+    <div className="app">
+      <div className="input-container">
+        <input
+          type="text"
+          placeholder="Enter YouTube video URL"
+          value={inputUrl}
+          onChange={(e) => setInputUrl(e.target.value)}
+        />
+        <button onClick={addVideo}>Add Video</button>
+      </div>
 
       {playlist.length > 0 && (
-        <>
-          <YouTube
-            videoId={playlist[currentIndex]?.id}
-            opts={{
-              width: "100%",
-              height: "360",
-              playerVars: {
-                autoplay: isPlaying ? 1 : 0,
-                rel: 0,
-                modestbranding: 1,
-              },
-            }}
-            onReady={onPlayerReady}
-            onStateChange={onPlayerStateChange}
-          />
-          <div style={{ marginTop: 10 }}>
-            <button onClick={prevVideo} disabled={currentIndex === 0}>
-              Previous
-            </button>
-            {isPlaying ? (
-              <button onClick={pauseVideo}>Pause</button>
-            ) : (
-              <button onClick={() => playVideoAtIndex(currentIndex)}>
-                Play
+        <div className="playlist-container">
+          <div className="video-player">
+            <YouTube
+              videoId={playlist[currentIndex]?.id}
+              opts={{
+                width: "100%",
+                height: "360",
+                playerVars: {
+                  autoplay: isPlaying ? 1 : 0,
+                  rel: 0,
+                  modestbranding: 1,
+                },
+              }}
+              onReady={onPlayerReady}
+              onStateChange={onPlayerStateChange}
+            />
+            <div className="controls">
+              <button onClick={prevVideo} disabled={currentIndex === 0}>
+                Previous
               </button>
-            )}
-            <button
-              onClick={nextVideo}
-              disabled={currentIndex === playlist.length - 1}
-            >
-              Next
-            </button>
+              {isPlaying ? (
+                <button onClick={pauseVideo}>Pause</button>
+              ) : (
+                <button onClick={() => playVideoAtIndex(currentIndex)}>
+                  Play
+                </button>
+              )}
+              <button
+                onClick={nextVideo}
+                disabled={currentIndex === playlist.length - 1}
+              >
+                Next
+              </button>
+            </div>
           </div>
-        </>
+          <ul>
+            {playlist.map((video, i) => (
+              <li
+                key={video.id}
+                className={`${i === currentIndex ? "active" : ""}`}
+                onClick={() => playVideoAtIndex(i)}
+              >
+                <img src={video.thumbnail_url} alt={video.title} />
+                <div className="video-info">
+                  <div
+                    className="text-overflow-3"
+                    style={{ fontWeight: "bold" }}
+                  >
+                    {video.title}
+                  </div>
+                  <div style={{ fontSize: 12, color: "#666" }}>
+                    {video.author_name}
+                  </div>
+                </div>
+              </li>
+            ))}
+          </ul>
+        </div>
       )}
     </div>
   );
