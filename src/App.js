@@ -2,8 +2,8 @@ import React, { useState, useEffect, useRef } from "react";
 import YouTube from "react-youtube";
 import io from "socket.io-client";
 
-const SOCKET_SERVER_URL = "http://localhost:3001";
-// const SOCKET_SERVER_URL = "https://shared-youtube-player-nodejs.onrender.com";
+// const SOCKET_SERVER_URL = "http://localhost:3001";
+const SOCKET_SERVER_URL = "https://shared-youtube-player-nodejs.onrender.com";
 const ROOM_ID = "default-room";
 
 export default function App() {
